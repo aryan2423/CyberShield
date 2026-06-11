@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>CyberShield</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <h1>CyberShield <span style="color:#905bc9;">!</span></h1>
+        <h3>File Type Identifier & Digital Forensics Tool</h3>
+        <div class="dashboard">
+            <div class="box">
+                <h4>Total Scans</h4>
+                <p>{{ total }}</p>
+            </div>
+            <div class="box">
+                <h4>Safe Files</h4>
+                <p>{{ safe }}</p>
+            </div>
+            <div class="box">
+                <h4>Suspicious</h4>
+                <p>{{ suspicious }}</p>
+            </div>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data">
+            <input type="file" id="fileInput" name="file" hidden required>
+
+            <label for="fileInput" class="btn">
+                Choose File
+            </label>
+            <span id="fileName">No file selected</span>
+            <button type="submit" class="btn">
+                Analyze File
+            </button>
+        </form>
+
+        {% if result %}
+
+        <div class="card">
+            <h2>Analysis Report</h2>
+            <p><b>File Name:</b> {{ result.filename }}</p>
+            <p><b>Extension:</b> {{ result.extension }}</p>
+            <p><b>Actual Type:</b> {{ result.actual_type }}</p>
+            <p><b>File Size:</b> {{ result.size }} MB</p>
+            <p>
+                <b>Risk Level:</b>
+                <span class="{{ result.risk|lower }}">
+                    {{ result.risk }}
+                </span>
+            </p>
+
+            <p><b>MD5:</b></p>
+            <p class="hash">{{ result.md5 }}</p>
+
+            <p><b>SHA256:</b></p>
+            <p class="hash">{{ result.sha256 }}</p>
+
+            <p><b>Header Signature:</b></p>
+            <p class="hash">{{ result.header }}</p>
+
+            {% if warning %}
+                <p class="warning">
+                    {{ warning }}
+                </p>
+            {% endif %}
+
+        </div>
+
+        {% endif %}
+
+        <h2>Scan History</h2>
+
+        <table>
+            <tr>
+                <th>File Name</th>
+                <th>Type</th>
+                <th>Risk</th>
+            </tr>
+
+            {% for item in history %}
+
+            <tr>
+                <td>{{ item.name }}</td>
+                <td>{{ item.type }}</td>
+                <td>{{ item.risk }}</td>
+            </tr>
+
+            {% endfor %}
+        </table>
+
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
